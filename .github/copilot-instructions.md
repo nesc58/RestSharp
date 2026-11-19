@@ -30,10 +30,10 @@ dotnet build RestSharp.slnx -c Debug
 dotnet test RestSharp.slnx -c Debug
 
 # Run tests for specific TFM
-dotnet test test/RestSharp.Tests/RestSharp.Tests.csproj -f net8.0
+dotnet test test/RestSharp.Tests/RestSharp.Tests.csproj -f net11.0
 
 # Run single test
-dotnet test test/RestSharp.Tests/RestSharp.Tests.csproj --filter "FullyQualifiedName=Namespace.Class.Method" -f net8.0
+dotnet test test/RestSharp.Tests/RestSharp.Tests.csproj --filter "FullyQualifiedName=Namespace.Class.Method" -f net11.0
 
 # Pack for release
 dotnet pack src/RestSharp/RestSharp.csproj -c Release -o nuget -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
@@ -43,9 +43,9 @@ dotnet pack src/RestSharp/RestSharp.csproj -c Release -o nuget -p:IncludeSymbols
 
 The library targets multiple frameworks:
 - `netstandard2.0`, `net471`, `net48` - Legacy support
-- `net8.0`, `net9.0`, `net10.0` - Modern .NET
+- `net10.0`, `net11.0` - Modern .NET
 
-Tests target: `net48` (Windows only), `net8.0`, `net9.0`, `net10.0`
+Tests target: `net48` (Windows only), `net10.0`, `net11.0`
 
 When adding features:
 - Use conditional compilation for TFM-specific APIs: `#if NET` or `#if NET8_0_OR_GREATER`

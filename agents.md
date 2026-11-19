@@ -44,15 +44,13 @@ The solution (`RestSharp.slnx`) is organized into the following structure:
 - `netstandard2.0` - .NET Standard 2.0 for broad compatibility
 - `net471` - .NET Framework 4.7.1
 - `net48` - .NET Framework 4.8
-- `net8.0` - .NET 8
-- `net9.0` - .NET 9
 - `net10.0` - .NET 10
+- `net11.0` - .NET 11
 
 **Test Targets** (`test/Directory.Build.props`):
 - `net48` - .NET Framework 4.8 (Windows only)
-- `net8.0` - .NET 8
-- `net9.0` - .NET 9
 - `net10.0` - .NET 10
+- `net11.0` - .NET 11
 
 **Source Generator Target:**
 - `netstandard2.0` - Required for source generators to work across all compiler versions
@@ -87,7 +85,7 @@ The build system uses a hierarchical props structure:
 
 4. **`Directory.Packages.props`** - Central Package Management:
     - All package versions defined centrally
-    - TFM-specific version overrides (e.g., `System.Text.Json` for .NET 10)
+    - TFM-specific version overrides for framework-coupled packages
     - Separate sections for runtime, compile, and testing dependencies
 
 ### Framework-Specific Considerations
@@ -97,7 +95,7 @@ The build system uses a hierarchical props structure:
 - Polyfills are enabled via `Nullable` package for nullable reference type attributes
 - Reference assemblies provided by `Microsoft.NETFramework.ReferenceAssemblies.net472`
 
-**Modern .NET (8/9/10):**
+**Modern .NET (10/11):**
 - Native support for most features
 - Conditional compilation using `#if NET`
 - Platform-specific attributes like `[UnsupportedOSPlatform("browser")]`
@@ -240,8 +238,8 @@ In `src/RestSharp/RestSharp.csproj`:
 
 Generated files are emitted to the `obj` directory when `EmitCompilerGeneratedFiles=true`. To view:
 ```bash
-# Example path for net8.0 Debug build
-ls src/RestSharp/obj/Debug/net8.0/generated/SourceGenerator/
+# Example path for net11.0 Debug build
+ls src/RestSharp/obj/Debug/net11.0/generated/SourceGenerator/
 ```
 
 ---
@@ -304,14 +302,14 @@ dotnet test test/RestSharp.Tests/RestSharp.Tests.csproj
 
 **Single target framework:**
 ```bash
-dotnet test test/RestSharp.Tests/RestSharp.Tests.csproj -f net8.0
+dotnet test test/RestSharp.Tests/RestSharp.Tests.csproj -f net11.0
 ```
 
 **Single test by fully-qualified name (recommended for precision):**
 ```bash
 dotnet test test/RestSharp.Tests/RestSharp.Tests.csproj \
   --filter "FullyQualifiedName=RestSharp.Tests.UrlBuilderTests_Get.Should_build_url_with_query" \
-  -f net8.0
+  -f net11.0
 ```
 
 **Filter by namespace or class:**
@@ -344,7 +342,7 @@ Results are written per target framework, making it easy to identify TFM-specifi
 **Generate coverage report:**
 ```bash
 dotnet test test/RestSharp.Tests/RestSharp.Tests.csproj \
-  -f net8.0 \
+  -f net11.0 \
   --collect:"XPlat Code Coverage" \
   -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
 ```
@@ -392,15 +390,14 @@ public class MyFeatureTests {
 **Triggers:** Pull requests (excluding `docs/**` changes)
 
 **Test Matrix:**
-- **Windows:** Tests against `net48`, `net8.0`, `net9.0`, `net10.0`
-- **Linux:** Tests against `net8.0`, `net9.0`, `net10.0` (no .NET Framework)
+- **Windows:** Tests against `net48`, `net10.0`, `net11.0`
+- **Linux:** Tests against `net10.0`, `net11.0` (no .NET Framework)
 
 **SDK Setup:**
 ```yaml
 dotnet-version: |
-  8.0.x
-  9.0.x
   10.0.x
+  11.0.x
 ```
 
 **Test Command:**
@@ -416,7 +413,7 @@ dotnet test -c Debug -f ${{ matrix.dotnet }}
 - Push to `dev` branch
 - Tags (for releases)
 
-**SDK:** .NET 10.0.x (for packaging)
+**SDK:** .NET 11.0.x (for packaging)
 
 **Steps:**
 1. Checkout with full history (`git fetch --prune --unshallow` for MinVer)
@@ -437,16 +434,14 @@ To replicate CI behavior locally:
 **Windows (all TFMs):**
 ```bash
 dotnet test -c Debug -f net48
-dotnet test -c Debug -f net8.0
-dotnet test -c Debug -f net9.0
 dotnet test -c Debug -f net10.0
+dotnet test -c Debug -f net11.0
 ```
 
 **Linux/macOS (no .NET Framework):**
 ```bash
-dotnet test -c Debug -f net8.0
-dotnet test -c Debug -f net9.0
 dotnet test -c Debug -f net10.0
+dotnet test -c Debug -f net11.0
 ```
 
 ---
@@ -606,7 +601,7 @@ find src/RestSharp/obj -name "*.g.cs" -o -name "ReadOnly*.cs"
 
 **Build for specific TFM:**
 ```bash
-dotnet build src/RestSharp/RestSharp.csproj -f net8.0
+dotnet build src/RestSharp/RestSharp.csproj -f net11.0
 ```
 
 **Check TFM-specific behavior:**
@@ -623,7 +618,7 @@ dotnet build src/RestSharp/RestSharp.csproj -f net8.0
 - **Solution:** Clean and rebuild, check `EmitCompilerGeneratedFiles` setting
 
 **Issue:** .NET Framework tests fail on non-Windows
-- **Solution:** Expected behavior; run with `-f net8.0` or higher on Linux/macOS
+- **Solution:** Expected behavior; run with `-f net10.0` or higher on Linux/macOS
 
 **Issue:** MinVer version incorrect
 - **Solution:** Ensure full Git history with `git fetch --prune --unshallow`
@@ -637,19 +632,19 @@ dotnet build src/RestSharp/RestSharp.csproj -f net8.0
 dotnet build RestSharp.slnx -c Release
 
 # Run all tests for a single TFM
-dotnet test test/RestSharp.Tests/RestSharp.Tests.csproj -f net8.0
+dotnet test test/RestSharp.Tests/RestSharp.Tests.csproj -f net11.0
 
 # Run a single test by FQN
 dotnet test test/RestSharp.Tests/RestSharp.Tests.csproj \
   --filter "FullyQualifiedName=RestSharp.Tests.ObjectParserTests.ShouldUseRequestProperty" \
-  -f net8.0
+  -f net11.0
 
 # Pack locally
 dotnet pack src/RestSharp/RestSharp.csproj -c Release -o nuget \
   -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
 
 # Generate code coverage
-dotnet test test/RestSharp.Tests/RestSharp.Tests.csproj -f net8.0 \
+dotnet test test/RestSharp.Tests/RestSharp.Tests.csproj -f net11.0 \
   --collect:"XPlat Code Coverage" \
   -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
 

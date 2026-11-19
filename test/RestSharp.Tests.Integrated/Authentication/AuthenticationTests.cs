@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using System.Web;
 using RestSharp.Authenticators;
 
 namespace RestSharp.Tests.Integrated.Authentication;
@@ -18,7 +17,7 @@ public class AuthenticationTests(WireMockTestServer server) : IClassFixture<Wire
         var response = await client.GetAsync<TestServerResponse[]>(request);
 
         var header = response!.First(x => x.Name == KnownHeaders.Authorization);
-        var auth   = HttpUtility.UrlDecode(header.Value)["Basic ".Length..];
+        var auth   = header.Value["Basic ".Length..];
         var value  = Convert.FromBase64String(auth);
         var parts  = Encoding.UTF8.GetString(value).Split(':');
 

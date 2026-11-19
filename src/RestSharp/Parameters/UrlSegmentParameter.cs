@@ -37,9 +37,9 @@ public partial record UrlSegmentParameter : NamedParameter {
         ) { }
 
 #if NET7_0_OR_GREATER
-    [GeneratedRegex("%2f", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-NO")]
+    [GeneratedRegex("%2f", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant)]
     private static partial Regex Pattern();
 #else
-    static Regex Pattern() => new("%2f", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    static Regex Pattern() => new("%2f", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 #endif
 }

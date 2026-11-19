@@ -24,7 +24,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        dotnet: ['net48', 'net8.0', 'net9.0', 'net10.0']
+        dotnet: ['net48', 'net10.0', 'net11.0']
 
     steps:
       - name: Checkout
@@ -33,9 +33,8 @@ jobs:
         uses: actions/setup-dotnet@v6
         with:
           dotnet-version: |
-            8.0.x
-            9.0.x
             10.0.x
+            11.0.x
       - name: Run tests
         run: |
           dotnet test test/RestSharp.Tests -c Debug -f ${{ matrix.dotnet }}
@@ -58,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dotnet: [ 'net8.0', 'net9.0', 'net10.0' ]
+        dotnet: [ 'net10.0', 'net11.0' ]
 
     steps:
       - name: Checkout
@@ -67,9 +66,8 @@ jobs:
         uses: actions/setup-dotnet@v6
         with:
           dotnet-version: |
-            8.0.x
-            9.0.x
             10.0.x
+            11.0.x
       - name: Run tests
         run: |
           dotnet test test/RestSharp.Tests -f ${{ matrix.dotnet }}

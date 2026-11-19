@@ -17,7 +17,7 @@ Suggested loop:
 
 ## 2) Multi-Targeting Guidance
 
-The core library targets netstandard2.0, net471, net48, net8.0, net9.0, and net10.0. Tests target net48 (Windows only), net8.0, net9.0, and net10.0.
+The core library targets netstandard2.0, net471, net48, net10.0, and net11.0. Tests target net48 (Windows only), net10.0, and net11.0.
 
 - Use conditional compilation for TFM-specific APIs or behaviors:
   - #if NET
@@ -69,8 +69,8 @@ Custom incremental generators live in gen/SourceGenerator and are referenced as 
   - Scope tests by TFM when API availability differs.
 - Useful commands:
   - dotnet test RestSharp.slnx -c Debug
-  - dotnet test test/RestSharp.Tests/RestSharp.Tests.csproj -f net8.0
-  - dotnet test test/RestSharp.Tests/RestSharp.Tests.csproj --filter "FullyQualifiedName=Namespace.Class.Method" -f net8.0
+  - dotnet test test/RestSharp.Tests/RestSharp.Tests.csproj -f net11.0
+  - dotnet test test/RestSharp.Tests/RestSharp.Tests.csproj --filter "FullyQualifiedName=Namespace.Class.Method" -f net11.0
 - Test results are written to test-results/<TFM>/<ProjectName>.trx.
 
 
@@ -118,11 +118,11 @@ Custom incremental generators live in gen/SourceGenerator and are referenced as 
 
 ## 11) Continuous Integration
 
-- PR workflow executes matrix tests on Windows (net48, net8.0, net9.0, net10.0) and Linux (net8.0, net9.0, net10.0).
+- PR workflow executes matrix tests on Windows (net48, net10.0, net11.0) and Linux (net10.0, net11.0).
 - Build/Deploy workflow packages and pushes to NuGet on dev branch and tags using OIDC-based auth.
 - To simulate CI locally:
-  - dotnet test -c Debug -f net8.0
-  - Optionally also run -f net9.0 and -f net10.0. On Windows, include net48.
+  - dotnet test -c Debug -f net11.0
+  - Optionally also run -f net10.0. On Windows, include net48.
 - Uploading artifacts and publishing test results are CI-responsibilities; keep local output organized in test-results for quick inspection.
 
 
@@ -162,7 +162,7 @@ Use this quick checklist before requesting review:
 - Generator output missing
   - Ensure EmitCompilerGeneratedFiles is true in the project under test; clean and rebuild; inspect obj/.../generated.
 - net48 failures on non-Windows
-  - Expected. Use net8.0 or higher on Linux/macOS. Run net48 only on Windows.
+  - Expected. Use net10.0 or higher on Linux/macOS. Run net48 only on Windows.
 - MinVer version incorrect
   - Ensure CI or local clone has full git history (git fetch --prune --unshallow).
 - Platform-specific failures
@@ -174,9 +174,9 @@ Use this quick checklist before requesting review:
 - Build solution (Release):
   - dotnet build RestSharp.slnx -c Release
 - Run tests for a single TFM:
-  - dotnet test test/RestSharp.Tests/RestSharp.Tests.csproj -f net8.0
+  - dotnet test test/RestSharp.Tests/RestSharp.Tests.csproj -f net11.0
 - Run a single test by fully-qualified name:
-  - dotnet test test/RestSharp.Tests/RestSharp.Tests.csproj --filter "FullyQualifiedName=RestSharp.Tests.ObjectParserTests.ShouldUseRequestProperty" -f net8.0
+  - dotnet test test/RestSharp.Tests/RestSharp.Tests.csproj --filter "FullyQualifiedName=RestSharp.Tests.ObjectParserTests.ShouldUseRequestProperty" -f net11.0
 - Pack locally with symbols:
   - dotnet pack src/RestSharp/RestSharp.csproj -c Release -o nuget -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
 - View generated source files after build:

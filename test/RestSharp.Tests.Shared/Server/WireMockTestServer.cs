@@ -73,7 +73,7 @@ public class WireMockTestServer : WireMockServer {
     }
 
     static ResponseMessage WrapForm(IRequestMessage request) {
-        var response = request.BodyData!.BodyAsFormUrlEncoded!["big_string"].Length;
+        var response = request.BodyData!.BodyAsFormUrlEncoded!["big_string"][0].Length;
         return CreateJson(new SuccessResponse($"Works! Length: {response}"));
     }
 
@@ -83,7 +83,7 @@ public class WireMockTestServer : WireMockServer {
     };
 
     static ResponseMessage HandleForm(IRequestMessage request) {
-        var result = request.BodyData!.BodyAsFormUrlEncoded!.Select(x => new TestServerResponse(x.Key, x.Value));
+        var result = request.BodyData!.BodyAsFormUrlEncoded!.Select(x => new TestServerResponse(x.Key, x.Value.FirstOrDefault() ?? ""));
         return CreateJson(result);
     }
 

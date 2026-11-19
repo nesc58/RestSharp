@@ -14,16 +14,14 @@ dotnet build RestSharp.slnx -c Debug
 dotnet test RestSharp.slnx -c Debug
 
 # Run tests for a specific TFM
-dotnet test RestSharp.slnx -f net9.0
+dotnet test RestSharp.slnx -f net11.0
 
 # Run a single test by fully-qualified name
-dotnet test test/RestSharp.Tests/RestSharp.Tests.csproj --filter "FullyQualifiedName=RestSharp.Tests.ObjectParserTests.ShouldUseRequestProperty" -f net8.0
+dotnet test test/RestSharp.Tests/RestSharp.Tests.csproj --filter "FullyQualifiedName=RestSharp.Tests.ObjectParserTests.ShouldUseRequestProperty" -f net11.0
 
 # Pack
 dotnet pack src/RestSharp/RestSharp.csproj -c Release -o nuget -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
 ```
-
-**Note:** `dotnet test` with `.slnx` does not work with `net8.0`. To run tests targeting `net8.0`, use individual project files: `dotnet test test/RestSharp.Tests/RestSharp.Tests.csproj -f net8.0`
 
 ## Project Overview
 
@@ -80,10 +78,10 @@ Abstract `Parameter` record base with concrete types: `HeaderParameter`, `QueryP
 
 ## Multi-Targeting
 
-**Library:** `netstandard2.0`, `net471`, `net48`, `net8.0`, `net9.0`, `net10.0`
-**Tests:** `net48` (Windows only), `net8.0`, `net9.0`, `net10.0`
+**Library:** `netstandard2.0`, `net471`, `net48`, `net10.0`, `net11.0`
+**Tests:** `net48` (Windows only), `net10.0`, `net11.0`
 
-Use conditional compilation for TFM-specific APIs: `#if NET`, `#if NET8_0_OR_GREATER`. `System.Text.Json` is a NuGet dependency on older TFMs but built-in on net8.0+.
+Use conditional compilation for TFM-specific APIs: `#if NET`, `#if NET8_0_OR_GREATER`. `System.Text.Json` is a NuGet dependency on older TFMs but built-in on modern .NET.
 
 ## Code Style & Conventions
 
